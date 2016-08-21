@@ -18,12 +18,9 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.List;
 
-import Bean.HeWeather;
-import Bean.HeatherData;
-import Bean.ResultCode;
-import Bean.Results;
+
 import Bean.WeatherBean;
-import Bean.javaBean;
+
 
 /**
  * Created by admin on 2016/8/11.
@@ -92,5 +89,11 @@ public class Weather_Activity extends Activity {
         });
         mqueue.add(stringRequest);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this,MainActivity.class);
     }
 }

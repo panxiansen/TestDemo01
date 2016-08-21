@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,8 +35,11 @@ public class MainActivity extends Activity {
     private ListView listView;
     private EditText editText;
     private ArrayAdapter<String> adapter;
+    private ArrayAdapter<String> newadapter;//更新之后的适配器
     private List<String> districtList = new ArrayList<String>();
     private List<String> idList = new ArrayList<String>();
+    private List<String> newIdList = new ArrayList<String>();
+    private List<String> newList = new ArrayList<String>();//EditText更新的List
 
 
 
@@ -43,9 +48,36 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         editText = (EditText)findViewById(R.id.edit_text);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (editText.getText() != null) {
+                    String input = editText.getText().toString();
+                    for (int i = 0; i < districtList.size(); i++) {
+                        String a = districtList.get(i).toString();
+                        String b = idList.get(i).toString();
+                        if (a.contains(input)) {
+                            newList.add(a);
+                            newIdList.add(b);
+                        }
+                    }
+                    newadapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, newList);
+                    listView.setAdapter(newadapter);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         listView = (ListView)findViewById(R.id.list_view);
         adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,districtList);
-
 
         gson = new Gson();
         RequestQueue mQueue = Volley.newRequestQueue(context);
@@ -53,20 +85,18 @@ public class MainActivity extends Activity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("TAG", response);
+//                        Log.d("TAG", response);
                         City_info city_info = gson.fromJson(response, City_info.class);
                         List<City_info.City> cityList = city_info.getCity_info();
-                        Log.d("MySelf",cityList.get(2).getCity().toString());
+//                        Log.d("MySelf",cityList.get(2).getCity().toString());
                         for (int i = 0;i<cityList.size();i++){
                             String dist = cityList.get(i).getCity();
                             String id = cityList.get(i).getId();
 //                            Log.d("TAG" , dist);
                             districtList.add(dist);
                             idList.add(id);
-//                            int a = districtList.size();
-//                            Log.d("TAG",a + "shenmegui");
                         }
-//                        Log.w("TAG",districtList.get(3));
+
                         listView.setAdapter(adapter);
                     }
                 }, new Response.ErrorListener() {
@@ -80,13 +110,17 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent();
-                Log.d("TAG",districtList.get(position));
+                Log.d("TAG", districtList.get(position));
                 intent.putExtra("id", idList.get(position));
-                intent.putExtra("cityName",districtList.get(position));
-                intent.setClass(MainActivity.this,Weather_Activity.class);
+                intent.putExtra("cityName", districtList.get(position));
+                intent.setClass(MainActivity.this, Weather_Activity.class);
                 startActivity(intent);
+                MainActivity.this.finish();
             }
         });
+
+
+
     }
 
     @Override
