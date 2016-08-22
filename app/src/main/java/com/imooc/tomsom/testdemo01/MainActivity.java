@@ -48,6 +48,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         editText = (EditText)findViewById(R.id.edit_text);
+        listView = (ListView) findViewById(R.id.list_view);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -60,14 +61,25 @@ public class MainActivity extends Activity {
                     String input = editText.getText().toString();
                     for (int i = 0; i < districtList.size(); i++) {
                         String a = districtList.get(i).toString();
-                        String b = idList.get(i).toString();
+
                         if (a.contains(input)) {
                             newList.add(a);
+                            String b = idList.get(i).toString();
                             newIdList.add(b);
                         }
                     }
                     newadapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, newList);
                     listView.setAdapter(newadapter);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Intent intent = new Intent();
+                            intent.putExtra("id",newIdList.get(position).toString());
+                            intent.putExtra("cityName",newList.get(position).toString());
+                            intent.setClass(MainActivity.this,Weather_Activity.class);
+                            startActivity(intent);
+                        }
+                    });
                 }
             }
 
