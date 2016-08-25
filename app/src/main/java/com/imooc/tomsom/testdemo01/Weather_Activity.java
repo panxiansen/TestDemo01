@@ -1,13 +1,17 @@
 package com.imooc.tomsom.testdemo01;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -43,6 +47,15 @@ public class Weather_Activity extends Activity implements View.OnClickListener{
     private TextView basic_update_loc;//本地更新时间
     private TextView now_cond_txt;//本地天气描述
     private TextView now_tmp;//现在温度
+
+    private LinearLayout comf_layout;
+    private LinearLayout sport_layout;
+    private LinearLayout cw_layout;
+    private LinearLayout drsg_layout;
+    private LinearLayout uv_layout;
+    private LinearLayout trav_layout;
+    private LinearLayout flu_layout;
+
 
     Context context = this;
     String cityName;
@@ -88,6 +101,22 @@ public class Weather_Activity extends Activity implements View.OnClickListener{
         basic_update_loc = (TextView) findViewById(R.id.basic_update_loc);
         now_cond_txt = (TextView) findViewById(R.id.now_cond_txt);
         now_tmp = (TextView) findViewById(R.id.now_tmp);
+
+        sport_layout = (LinearLayout) findViewById(R.id.sport_layout);
+        cw_layout = (LinearLayout) findViewById(R.id.cw_layout);
+        drsg_layout = (LinearLayout) findViewById(R.id.drsg_layout);
+        flu_layout = (LinearLayout) findViewById(R.id.flu_layout);
+        trav_layout = (LinearLayout) findViewById(R.id.trav_layout);
+        uv_layout = (LinearLayout) findViewById(R.id.uv_layout);
+        comf_layout = (LinearLayout) findViewById(R.id.comf_layout);
+        comf_layout.setOnClickListener(this);
+        sport_layout.setOnClickListener(this);
+        cw_layout.setOnClickListener(this);
+        drsg_layout.setOnClickListener(this);
+        flu_layout.setOnClickListener(this);
+        trav_layout.setOnClickListener(this);
+        uv_layout.setOnClickListener(this);
+
     }
 
     @Override
@@ -148,8 +177,53 @@ public class Weather_Activity extends Activity implements View.OnClickListener{
             case R.id.back_button:
                 onBackPressed();
                 break;
+
+            case R.id.comf_layout:
+                showDialog("生活指数",HeWeatherdataservice.get(0).getSuggestion().getComf().getTxt().toString(),R.mipmap.ic_launcher);
+                break;
+
+            case R.id.cw_layout:
+                showDialog("洗车指数",HeWeatherdataservice.get(0).getSuggestion().getCw().getTxt().toString(),R.mipmap.cw_img);
+                break;
+
+            case R.id.drsg_layout:
+                showDialog("穿衣指数",HeWeatherdataservice.get(0).getSuggestion().getDrsg().getTxt().toString(),R.mipmap.drsg_img);
+                break;
+
+            case R.id.flu_layout:
+                showDialog("感冒指数",HeWeatherdataservice.get(0).getSuggestion().getFlu().getTxt().toString(),R.mipmap.flu_img);
+                break;
+
+            case R.id.sport_layout:
+                showDialog("运动指数",HeWeatherdataservice.get(0).getSuggestion().getSport().getTxt().toString(),R.mipmap.sport_img);
+                break;
+
+            case R.id.trav_layout:
+                showDialog("旅游指数",HeWeatherdataservice.get(0).getSuggestion().getTrav().getTxt().toString(),R.mipmap.trav_img);
+                break;
+
+            case R.id.uv_layout:
+                showDialog("紫外线指数",HeWeatherdataservice.get(0).getSuggestion().getUv().getTxt().toString(),R.mipmap.uv_img);
+                break;
+
             default:
                 break;
         }
+    }
+
+    private void showDialog(String title,String message,int id){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);//得到构造器
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setIcon(id);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Toast.makeText(Weather_Activity.this,"确认" + which, Toast.LENGTH_SHORT).show();
+            }
+        });
+        //参数设置完毕之后，创建并显示出来
+        builder.create().show();
     }
 }

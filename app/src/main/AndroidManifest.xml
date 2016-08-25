@@ -10,8 +10,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="小小天气">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

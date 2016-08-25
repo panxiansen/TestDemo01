@@ -78,6 +78,7 @@ public class MainActivity extends Activity {
                             intent.putExtra("cityName",newList.get(position).toString());
                             intent.setClass(MainActivity.this,Weather_Activity.class);
                             startActivity(intent);
+                            MainActivity.this.finish();
                         }
                     });
                 }
